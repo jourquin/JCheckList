@@ -1,0 +1,1 @@
+A JList Java component with checkable items.
