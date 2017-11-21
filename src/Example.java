@@ -33,7 +33,7 @@ public class Example {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Create a list containing CheckboxListItem's
-    DefaultCheckListModel<String> myModel = new DefaultCheckListModel<String>();
+    final DefaultCheckListModel<String> myModel = new DefaultCheckListModel<String>();
     JCheckList<String> myCheckList = new JCheckList<>(myModel);
 
     // Fill it
