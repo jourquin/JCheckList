@@ -1,3 +1,15 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package javax.swing;
 
 import java.awt.Rectangle;
@@ -9,182 +21,198 @@ import java.util.Vector;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-/**
- * A JList with checkable items
- *  
- * @author Bart Jourquin (inspired by various sources)
- *
- */
+/** A JList with checkable items. */
+public class JCheckList<E> extends JList<E> {
 
-public class JCheckList<E> extends JList {
+  public static class CheckableItem<T> {
+    private boolean isSelected;
+    private T value;
 
-	public static class CheckableItem<Type> {
-		private boolean isSelected;
-		private Type value;
+    public CheckableItem(T value) {
+      this.value = value;
+      isSelected = false;
+    }
 
-		public CheckableItem(Type value) {
-			this.value = value;
-			isSelected = false;
-		}
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (obj instanceof CheckableItem) {
+        CheckableItem<?> other = (CheckableItem<?>) obj;
+        if (value == null) {
+          if (other.value != null) {
+            return false;
+          }
+        } else {
+          if (value == other.value) {
+            return true;
+          }
+          if (value.equals(other.value)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (obj instanceof CheckableItem) {
-				CheckableItem<?> other = (CheckableItem<?>) obj;
-				if (value == null) {
-					if (other.value != null) {
-						return false;
-					}
-				} else {
-					if (value == other.value) {
-						return true;
-					}
-					if (value.equals(other.value)) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+    public T getValue() {
+      return value;
+    }
 
-		public Type getValue() {
-			return value;
-		}
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (value == null ? 0 : value.hashCode());
+      return result;
+    }
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + (value == null ? 0 : value.hashCode());
-			return result;
-		}
+    public boolean isSelected() {
+      return isSelected;
+    }
 
-		public boolean isSelected() {
-			return isSelected;
-		}
+    public void setSelected(boolean newValue) {
+      isSelected = newValue;
+    }
 
-		public void setSelected(boolean newValue) {
-			isSelected = newValue;
-		}
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+  }
 
-		@Override
-		public String toString() {
-			return String.valueOf(value);
-		}
-	}
-	protected class CheckListRenderer extends JCheckBox implements ListCellRenderer {
-		private static final long serialVersionUID = 1L;
+  protected class CheckListRenderer extends JCheckBox implements ListCellRenderer<Object> {
+    private static final long serialVersionUID = 1L;
 
-		public CheckListRenderer() {
-			setBackground(UIManager.getColor("List.textBackground"));
-			setForeground(UIManager.getColor("List.textForeground"));
-		}
+    public CheckListRenderer() {
+      setBackground(UIManager.getColor("List.textBackground"));
+      setForeground(UIManager.getColor("List.textForeground"));
+    }
 
-		@Override
-		public JComponent getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
-			setEnabled(list.isEnabled());
-			setSelected(isChecked(index));
-			setFont(list.getFont());
-			setText(value.toString());
-			return this;
-		}
-	}
-	private static final long serialVersionUID = 1L;
-	private List<CheckListSelectionListener<E>> listeners = new Vector<>();
+    @Override
+    public JComponent getListCellRendererComponent(
+        JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+      setEnabled(list.isEnabled());
+      setSelected(isChecked(index));
+      setFont(list.getFont());
+      setText(value.toString());
+      return this;
+    }
+  }
 
-	private CheckListModel<E> model;
+  private static final long serialVersionUID = 1L;
+  private List<CheckListSelectionListener<E>> listeners = new Vector<>();
 
-	private final transient ListDataListener myDataListener;
+  private CheckListModel<E> model;
 
-	public JCheckList(CheckListModel<E> model) {
-		super(model);
-		this.model = model;
-		setCellRenderer(new CheckListRenderer());
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int index = locationToIndex(e.getPoint());
-				if (index == -1) {
-					return;
-				}
-				E item = getModel().troggleItem(index);
-				Rectangle rect = getCellBounds(index, index);
-				repaint(rect);
-				fireCheckListSelectionChanged(item);
-			}
-		});
-		myDataListener = new ListDataListener() {
-			@Override
-			public void contentsChanged(ListDataEvent e) {
-				fireCheckListSelectionChanged(null);
-			}
-			@Override
-			public void intervalAdded(ListDataEvent e) {
-				fireCheckListSelectionChanged(null);
-			}
-			@Override
-			public void intervalRemoved(ListDataEvent e) {
-				fireCheckListSelectionChanged(null);
-			}
-		};
-	}
+  private final transient ListDataListener myDataListener;
 
-	public void addCheckListSelectionListener(CheckListSelectionListener<E> listener) {
-		listeners.add(listener);
-	}
+  /**
+   * Constructor.
+   *
+   * @param model A CheckListModel
+   */
+  public JCheckList(CheckListModel<E> model) {
+    super(model);
+    this.model = model;
+    setCellRenderer(new CheckListRenderer());
+    setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    addMouseListener(
+        new MouseAdapter() {
+          @Override
+          public void mouseClicked(MouseEvent e) {
+            int index = locationToIndex(e.getPoint());
+            if (index == -1) {
+              return;
+            }
+            E item = getModel().troggleItem(index);
+            Rectangle rect = getCellBounds(index, index);
+            repaint(rect);
+            fireCheckListSelectionChanged(item);
+          }
+        });
+    myDataListener =
+        new ListDataListener() {
+          @Override
+          public void contentsChanged(ListDataEvent e) {
+            fireCheckListSelectionChanged(null);
+          }
 
-	public void checkItem(E element) {
-		E item = getModel().checkItem(element);
-		fireCheckListSelectionChanged(item);
-	}
+          @Override
+          public void intervalAdded(ListDataEvent e) {
+            fireCheckListSelectionChanged(null);
+          }
 
-	public E checkItem(int index) {
-		E item = getModel().checkItem(index);
-		fireCheckListSelectionChanged(item);
-		return item;
-	}
+          @Override
+          public void intervalRemoved(ListDataEvent e) {
+            fireCheckListSelectionChanged(null);
+          }
+        };
+  }
 
-	protected void fireCheckListSelectionChanged(E item) {
-		for (CheckListSelectionListener<E> listener : listeners) {
-			listener.selectionChanged(item);
-		}
-	}
+  public void addCheckListSelectionListener(CheckListSelectionListener<E> listener) {
+    listeners.add(listener);
+  }
 
-	public E getItem(int index) {
-		return model.getElementAt(index);
-	}
+  public void checkItem(E element) {
+    E item = getModel().checkItem(element);
+    fireCheckListSelectionChanged(item);
+  }
 
-	@Override
-	public CheckListModel<E> getModel() {
-		return model;
-	}
+  /**
+   * Check an item in the list.
+   *
+   * @param index The index of the item in the list
+   * @return The checked item
+   */
+  public E checkItem(int index) {
+    E item = getModel().checkItem(index);
+    fireCheckListSelectionChanged(item);
+    return item;
+  }
 
-	public boolean isChecked(int index) {
-		return model.isChecked(index);
-	}
+  protected void fireCheckListSelectionChanged(E item) {
+    for (CheckListSelectionListener<E> listener : listeners) {
+      listener.selectionChanged(item);
+    }
+  }
 
-	public void removeCheckListSelectionListener(CheckListSelectionListener<E> listener) {
-		listeners.remove(listener);
-	}
+  public E getItem(int index) {
+    return model.getElementAt(index);
+  }
 
-	public void setModel(CheckListModel<E> model) {
-		super.setModel(model);
-		this.model.removeListDataListener(myDataListener);
-		this.model = model;
-		this.model.addListDataListener(myDataListener);
-		fireCheckListSelectionChanged(null);
-	}
+  @Override
+  public CheckListModel<E> getModel() {
+    return model;
+  }
 
-	@Override
-	public void setModel(ListModel model) {
-		throw new IllegalArgumentException("This checklist expects a CheckListModel");
-	}
+  public boolean isChecked(int index) {
+    return model.isChecked(index);
+  }
 
+  public void removeCheckListSelectionListener(CheckListSelectionListener<E> listener) {
+    listeners.remove(listener);
+  }
+
+  /**
+   * Set the CheckListModel.
+   *
+   * @param model The model to set.
+   */
+  public void setModel(CheckListModel<E> model) {
+    super.setModel(model);
+    this.model.removeListDataListener(myDataListener);
+    this.model = model;
+    this.model.addListDataListener(myDataListener);
+    fireCheckListSelectionChanged(null);
+  }
+
+  @Override
+  public void setModel(ListModel<E> model) {
+    throw new IllegalArgumentException("This checklist expects a CheckListModel");
+  }
 }
