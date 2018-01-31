@@ -10,9 +10,11 @@
  * limitations under the License.
  */
 
-package javax.swing;
+package edu.uclouvain.swing;
 
 import java.util.Collection;
+
+import javax.swing.ListModel;
 
 /**
  * Extended list model.

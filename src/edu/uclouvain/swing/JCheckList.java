@@ -10,7 +10,7 @@
  * limitations under the License.
  */
 
-package javax.swing;
+package edu.uclouvain.swing;
 
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -18,6 +18,13 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 

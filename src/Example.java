@@ -9,12 +9,13 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import edu.uclouvain.swing.DefaultCheckListModel;
+import edu.uclouvain.swing.JCheckList;
+
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.DefaultCheckListModel;
-import javax.swing.JCheckList;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 

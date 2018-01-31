@@ -10,7 +10,7 @@
  * limitations under the License.
  */
 
-package javax.swing;
+package edu.uclouvain.swing;
 
 /**
  * Selection listener.

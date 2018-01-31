@@ -10,13 +10,15 @@
  * limitations under the License.
  */
 
-package javax.swing;
+package edu.uclouvain.swing;
+
+import edu.uclouvain.swing.JCheckList.CheckableItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.JCheckList.CheckableItem;
+import javax.swing.AbstractListModel;
 
 public class DefaultCheckListModel<E> extends AbstractListModel<E> implements CheckListModel<E> {
 
