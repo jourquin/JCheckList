@@ -20,9 +20,11 @@ import javax.swing.JCheckList.CheckableItem;
 
 public class DefaultCheckListModel<E> extends AbstractListModel<E> implements CheckListModel<E> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 726416792816178211L;
+
   private List<CheckableItem<E>> list;
 
+  /** Default constructor. */
   public DefaultCheckListModel() {
     list = new ArrayList<>();
   }
@@ -101,7 +103,7 @@ public class DefaultCheckListModel<E> extends AbstractListModel<E> implements Ch
   }
 
   @Override
-  public E troggleItem(int index) {
+  public E toggleItem(int index) {
     CheckableItem<E> item = list.get(index);
     item.setSelected(!item.isSelected());
     fireContentsChanged(this, list.indexOf(item), list.indexOf(item));

@@ -12,6 +12,11 @@
 
 package javax.swing;
 
+/**
+ * Selection listener.
+ *
+ * @param <T> Item
+ */
 public interface CheckListSelectionListener<T> {
   void selectionChanged(T item);
 }

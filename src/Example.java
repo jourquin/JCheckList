@@ -9,7 +9,6 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

@@ -24,10 +24,20 @@ import javax.swing.event.ListDataListener;
 /** A JList with checkable items. */
 public class JCheckList<E> extends JList<E> {
 
+  /**
+   * Inner class representing a checkable item.
+   *
+   * @param <T> Item value
+   */
   public static class CheckableItem<T> {
     private boolean isSelected;
     private T value;
 
+    /**
+     * Constructor.
+     *
+     * @param value Item value
+     */
     public CheckableItem(T value) {
       this.value = value;
       isSelected = false;
@@ -59,6 +69,11 @@ public class JCheckList<E> extends JList<E> {
       return false;
     }
 
+    /**
+     * Returns the item value.
+     *
+     * @return Item value
+     */
     public T getValue() {
       return value;
     }
@@ -71,10 +86,20 @@ public class JCheckList<E> extends JList<E> {
       return result;
     }
 
+    /**
+     * Tests if the item is selected.
+     *
+     * @return True if selected
+     */
     public boolean isSelected() {
       return isSelected;
     }
 
+    /**
+     * Selects the item.
+     *
+     * @param newValue True to select, false to unselect
+     */
     public void setSelected(boolean newValue) {
       isSelected = newValue;
     }
@@ -85,9 +110,11 @@ public class JCheckList<E> extends JList<E> {
     }
   }
 
+  /** Inner class to render the check list. */
   protected class CheckListRenderer extends JCheckBox implements ListCellRenderer<Object> {
     private static final long serialVersionUID = 1L;
 
+    /** Constructor. */
     public CheckListRenderer() {
       setBackground(UIManager.getColor("List.textBackground"));
       setForeground(UIManager.getColor("List.textForeground"));
@@ -129,7 +156,7 @@ public class JCheckList<E> extends JList<E> {
             if (index == -1) {
               return;
             }
-            E item = getModel().troggleItem(index);
+            E item = getModel().toggleItem(index);
             Rectangle rect = getCellBounds(index, index);
             repaint(rect);
             fireCheckListSelectionChanged(item);
@@ -154,10 +181,20 @@ public class JCheckList<E> extends JList<E> {
         };
   }
 
+  /**
+   * Adds a selection listener.
+   *
+   * @param listener The CheckListSelectionListener to add
+   */
   public void addCheckListSelectionListener(CheckListSelectionListener<E> listener) {
     listeners.add(listener);
   }
 
+  /**
+   * Checks an item.
+   *
+   * @param element The item to check.
+   */
   public void checkItem(E element) {
     E item = getModel().checkItem(element);
     fireCheckListSelectionChanged(item);
@@ -181,6 +218,12 @@ public class JCheckList<E> extends JList<E> {
     }
   }
 
+  /**
+   * Gets an item.
+   *
+   * @param index The index of gthe item to get.
+   * @return The item.
+   */
   public E getItem(int index) {
     return model.getElementAt(index);
   }
@@ -190,10 +233,21 @@ public class JCheckList<E> extends JList<E> {
     return model;
   }
 
+  /**
+   * Tests if an item is checked.
+   *
+   * @param index The index of the item to check
+   * @return The item
+   */
   public boolean isChecked(int index) {
     return model.isChecked(index);
   }
 
+  /**
+   * Removes the selection listener.
+   *
+   * @param listener The listener to remove
+   */
   public void removeCheckListSelectionListener(CheckListSelectionListener<E> listener) {
     listeners.remove(listener);
   }
